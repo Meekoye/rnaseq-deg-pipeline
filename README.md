@@ -1,122 +1,103 @@
 # rnaseq-deg-pipeline
 This repository contains a complete RNA-seq differential gene expression analysis pipeline using TPM normalization. It compares sensitive and resistant sample groups, calculates log2 fold changes, performs statistical testing with FDR correction, identifies significantly up- and down-regulated genes, and visualizes results using a volcano plot.
-RNA-Seq Differential Gene Expression Analysis
+# RNA-Seq Differential Gene Expression Analysis
 
-A complete RNA-seq differential gene expression analysis pipeline using TPM normalization. This project compares sensitive and resistant sample groups, identifies differentially expressed genes (DEGs), and visualizes results using a volcano plot.
+This repository contains a Python-based RNA-seq differential gene expression analysis workflow. The script performs **TPM normalization**, compares **sensitive** and **resistant** sample groups, identifies **differentially expressed genes (DEGs)**, and visualizes results using a **volcano plot**.
 
-Overview
+---
 
-This repository implements a step-by-step RNA-seq analysis workflow that:
+## Overview
 
-Normalizes raw read counts using TPM
+The analysis pipeline includes:
 
-Computes log2 fold change between conditions
+* Loading raw gene count data from a CSV file
+* Normalizing expression values using TPM
+* Calculating log2 fold change between conditions
+* Performing statistical testing using Welch’s t-test
+* Correcting p-values using Benjamini–Hochberg FDR
+* Classifying genes as upregulated or downregulated
+* Visualizing DEGs with a volcano plot
 
-Performs statistical hypothesis testing
+---
 
-Applies false discovery rate (FDR) correction
+## Input Data Requirements
 
-Classifies genes as upregulated or downregulated
+The input file must be a CSV file containing:
 
-Visualizes results with a volcano plot
+* `Gene_ID` — unique gene identifier
+* `Gene_Length (BP)` — gene length in base pairs
+* Count columns for each sample, for example:
 
-Input Data Format
+  * `P001_sen`, `P002_sen`, `P003_sen`, `P004_sen`, `P005_sen`
+  * `P006_res`, `P007_res`, `P008_res`, `P009_res`, `P010_res`
 
-The input file must be a CSV containing the following information:
+---
 
-Gene_ID: unique gene identifier
+## Dependencies
 
-Gene_Length (BP): gene length in base pairs
+The script requires the following Python libraries:
 
-P001_sen to P005_sen: sensitive sample read counts
+```bash
+pip install pandas numpy scipy statsmodels matplotlib seaborn
+```
 
-P006_res to P010_res: resistant sample read counts
+This script is designed to run in **Google Colab** and uses `google.colab.files` for uploading input files.
 
-Dependencies
+---
 
-The pipeline requires the following Python libraries:
+## How to Run
 
-pandas
+1. Open the script in Google Colab
+2. Upload the gene count CSV file when prompted
+3. Run the script cells sequentially
+4. Review printed DEG tables and the volcano plot
 
-numpy
+---
 
-scipy
+## Analysis Steps
 
-statsmodels
+1. **TPM Normalization**
 
-matplotlib
+   * Convert gene length to kilobases
+   * Compute Reads Per Kilobase (RPK)
+   * Scale values to Transcripts Per Million (TPM)
 
-seaborn
+2. **Differential Expression**
 
-This analysis is designed to run in Google Colab and uses google.colab.files for file upload.
+   * Compute mean TPM per condition
+   * Calculate log2 fold change
+   * Perform Welch’s t-test per gene
 
-How to Run
+3. **Multiple Testing Correction**
 
-Open the script or notebook in Google Colab
+   * Apply Benjamini–Hochberg FDR correction
 
-Upload the CSV file when prompted
+4. **Visualization**
 
-Run all cells sequentially
+   * Generate a volcano plot showing significant DEGs
 
-Review printed results and the volcano plot
+---
 
-Analysis Workflow
-Data Loading
+## DEG Significance Criteria
 
-Upload CSV file
+* Log2 fold change ≥ 1 or ≤ −1
+* Adjusted p-value (FDR) < 0.05
 
-Read gene counts into a DataFrame
+Genes meeting these thresholds are classified as **upregulated** or **downregulated**.
 
-TPM Normalization
+---
 
-Convert gene length from base pairs to kilobases
+## Output
 
-Compute Reads Per Kilobase (RPK)
+The script produces:
 
-Scale to Transcripts Per Million (TPM)
+* TPM-normalized expression values
+* A DEG results table containing:
 
-Differential Expression
+  * Gene ID
+  * Log2 fold change
+  * Adjusted p-value
+  * Regulation status
+* A volcano plot visualization
 
-Calculate mean TPM per condition
-
-Compute log2 fold change
-
-Perform Welch’s t-test
-
-Multiple Testing Correction
-
-Apply Benjamini–Hochberg FDR correction
-
-Gene Classification
-
-Label genes as Up, Down, or No Regulation
-
-Visualization
-
-Generate a volcano plot
-
-DEG Thresholds
-
-Log2 fold change ≥ 1 or ≤ −1
-
-Adjusted p-value (FDR) < 0.05
-
-Volcano Plot Interpretation
-
-X-axis represents log2 fold change
-
-Y-axis represents −log10 adjusted p-value
-
-Significant DEGs appear in the upper left and right regions
-
-Output
-
-The pipeline produces:
-
-TPM-normalized expression values
-
-DEG table with gene ID, fold change, adjusted p-value, and regulation status
-
-Volcano plot visualization
-
-Lists of top upregulated and downregulated genes
+---
